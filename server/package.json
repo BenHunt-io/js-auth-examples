@@ -1,0 +1,22 @@
+{
+    "name": "jwt-examples",
+    "version": "1.0.0",
+    "description": "Some examples using jwt",
+    "main": "server.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "keywords": [
+        "jwt",
+        "encryption",
+        "crypto",
+        "security",
+        "javascript",
+        "js"
+    ],
+    "author": "Ben Hunt",
+    "license": "MIT",
+    "devDependencies": {
+        "nodemon": "^2.0.19"
+    }
+}
