@@ -5,7 +5,7 @@ const { intercept } = require('./src/controller/proxy/RequestInterceptor');
 const UserRepository = require('./src/repository/UserRepository');
 
 
-const httpPort = 4000;
+const httpPort = 8080;
 
 /**
  * Exports the public key
@@ -25,6 +25,8 @@ loginAPI.setupKeys()
             switch(url.pathname){
                 case '/login/publicKey' : loginAPI.getPublicKey(req, res);
                     break;
+                case '/login/symmetricKey' : loginAPI.uploadSymmetricKey(req, res);
+                    break;
                 case '/login' : loginAPI.login(req, res);
                     break;
                 case '/user' : userAPI.createUser(req, res);
@@ -38,6 +40,7 @@ loginAPI.setupKeys()
 
 function setupProxies(){
     loginAPI.getPublicKey = intercept(loginAPI.getPublicKey);
+    loginAPI.uploadSymmetricKey = intercept(loginAPI.uploadSymmetricKey);
     loginAPI.login = intercept(loginAPI.login);
     userAPI.createUser = intercept(userAPI.createUser);
 }

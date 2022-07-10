@@ -43,7 +43,32 @@ class LoginAPI {
                 })
         })
     }
-    
+
+    uploadSymmetricKey(req, res){
+        let body = '';
+        req.on('data', buffer => {
+           body += buffer.toString('utf8');
+        })
+
+
+        req.on('end', () => {
+            let encryptedExportedSymmetricKey = JSON.parse(body).symmetricKey;
+            let encryptedExportedSymmetricKeyBuffer = Buffer.from(encryptedExportedSymmetricKey, 'base64');
+
+            subtle.decrypt(this.algo, this.keyPair.privateKey, encryptedExportedSymmetricKeyBuffer)
+                .then(exportedSymmetricKeyBuffer => {
+                    let jsonWebKey = JSON.parse(Buffer.from(exportedSymmetricKeyBuffer).toString());
+                    let symmetricKey = subtle.importKey('jwk', jsonWebKey, 'AES-CTR', false, ['encrypt', 'decrypt']);
+                    this.symmetricKey = symmetricKey;
+                    res.statusCode = 200;
+                    res.setHeader("Content-Type", "application/json;charset=utf8;");
+                    res.write(JSON.stringify({"result": "Secure communication channel established!"}));
+                    res.end();
+                });
+        })
+
+
+    } 
     
     getPublicKey(req, res){
         let pubKeyAsString = JSON.stringify(this.pubKeyExport);
@@ -69,8 +94,10 @@ class LoginAPI {
             })
             .then(exportedPubKey => {
                 this.pubKeyExport = exportedPubKey;
-            })
+            });
     }
+
+
 }
 
 module.exports = LoginAPI;
